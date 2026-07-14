@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosaic Moments - Turn every moment into a masterpiece</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        /* 自定义滑块拖动条样式 */
+        .comparison-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 4px solid #4f46e5;
+            border-radius: 50%;
+            cursor: ew-resize;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 px-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2 group">
+                <div class="bg-brand-600 text-white p-2 rounded-xl group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-border-all text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-xl text-slate-900 tracking-tight">Mosaic <span class="text-brand-600">Moments</span></h1>
+                    <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Photo Mosaic Maker</p>
+                </div>
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                <a href="#" class="text-brand-600 hover:text-brand-700 transition">Home</a>
+                <a href="#create" class="hover:text-brand-600 transition">Create</a>
+                <a href="#examples" class="hover:text-brand-600 transition">Examples</a>
+                <a href="#faq" class="hover:text-brand-600 transition">FAQ</a>
+                <a href="#pricing" class="hover:text-brand-600 transition">Pricing</a>
+                <a href="#support" class="hover:text-brand-600 transition">Support</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <button class="text-slate-500 hover:text-slate-800 text-sm font-medium flex items-center space-x-1">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>ZH / EN</span>
+                </button>
+                <a href="#create" class="bg-slate-900 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-md shadow-slate-100">
+                    立即制作
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-16 px-6 bg-gradient-to-b from-white to-slate-50">
+        <div class="max-w-7xl mx-auto text-center space-y-8">
+            <div class="max-w-3xl mx-auto space-y-4">
+                <span class="bg-brand-50 text-brand-600 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                    MVP Stage • 完全免费预览
+                </span>
+                <h2 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight tracking-tight">
+                    Turn Every Moment Into a <span class="text-brand-600">Masterpiece</span>
+                </h2>
+                <p class="text-lg text-slate-500 max-w-xl mx-auto">
+                    上传你最珍贵的主图，用成百上千张记忆碎片，拼凑出独一无二的视觉史诗。
+                </p>
+            </div>
+
+            <div class="max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative aspect-video"
+                 x-data="{ sliderPos: 50 }" 
+                 @mousemove="if($event.buttons === 1) { sliderPos = Math.max(0, Math.min(100, (($event.clientX - $el.getBoundingClientRect().left) / $el.clientWidth) * 100)) }">
+                
+                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80" 
+                     class="absolute inset-0 w-full h-full object-cover filter saturate-150 contrast-125" style="image-rendering: pixelated;" alt="Mosaic Effect">
+                <div class="absolute inset-0 opacity-40 bg-[linear-gradient(to_right,rgba(0,0,0,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+
+                <div class="absolute inset-0 w-full h-full overflow-hidden" :style="'width: ' + sliderPos + '%'">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80" 
+                         class="absolute inset-0 w-full h-full object-cover" style="max-width: none; width: 664px;" alt="Original Photo">
+                </div>
+
+                <div class="absolute inset-y-0 w-1 bg-white cursor-ew-resize flex items-center justify-center shadow-lg" :style="'left: ' + sliderPos + '%'">
+                    <div class="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center text-white border-2 border-white shadow-md">
+                        <i class="fa-solid fa-arrows-left-right text-xs"></i>
+                    </div>
+                </div>
+
+                <span class="absolute left-4 bottom-4 bg-black/60 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-md font-medium">原始照片</span>
+                <span class="absolute right-4 bottom-4 bg-brand-600/90 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-md font-medium">马赛克 Moments 效果</span>
+            </div>
+            <p class="text-xs text-slate-400"><i class="fa-solid fa-hand-pointer mr-1 animate-bounce"></i> 鼠标按住并左右拖拽上方图片查看细节对比</p>
+        </div>
+    </section>
+
+    <section id="create" class="py-16 px-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 space-y-6">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-brand-600 mr-2"></i>开始创作
+                </h3>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-slate-700 flex justify-between items-center">
+                        <span>1. 上传目标主图</span>
+                        <span class="text-xs font-normal text-slate-400">支持最大 10MB</span>
+                    </label>
+                    <div class="border-2 border-dashed border-slate-200 hover:border-brand-600 rounded-2xl p-6 text-center cursor-pointer transition-all bg-slate-50/50 group">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 group-hover:text-brand-600 transition mb-2"></i>
+                        <p class="text-sm font-semibold text-slate-700">拖拽或点击上传主图</p>
+                        <p class="text-xs text-slate-400 mt-1">JPG, PNG, WebP</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-slate-700 flex justify-between items-center">
+                        <span>2. 上传素材小图</span>
+                        <span class="text-xs font-normal text-slate-400">建议 50-500 张</span>
+                    </label>
+                    <div class="border-2 border-dashed border-slate-200 hover:border-brand-600 rounded-2xl p-6 text-center cursor-pointer transition-all bg-slate-50/50 group">
+                        <i class="fa-solid fa-images text-3xl text-slate-400 group-hover:text-brand-600 transition mb-2"></i>
+                        <p class="text-sm font-semibold text-slate-700">批量上传素材照片</p>
+                        <p class="text-xs text-slate-400 mt-1">单张 &le; 5MB，系统自动智能压缩裁切</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-4 border-t border-slate-100" x-data="{ gridDensity: 50, blendOpacity: 30 }">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">算法偏好设置</h4>
+                    
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                            <span>拼图密度 (网格数量)</span>
+                            <span class="text-brand-600 font-mono" x-text="gridDensity + ' x ' + gridDensity">50 x 50</span>
+                        </div>
+                        <input type="range" x-model="gridDensity" min="20" max="100" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                            <span>原图色彩融合度</span>
+                            <span class="text-brand-600 font-mono" x-text="blendOpacity + '%'">30%</span>
+                        </div>
+                        <input type="range" x-model="blendOpacity" min="0" max="100" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                    </div>
+                </div>
+
+                <button class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-100 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                    <span>一键合成马赛克 Moments</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col">
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 flex-1 flex flex-col min-h-[480px]">
+                <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-6">
+                    <span class="text-sm font-bold text-slate-700 flex items-center">
+                        <i class="fa-solid fa-circle text-emerald-500 text-xs mr-2 animate-pulse"></i> 实时渲染区域
+                    </span>
+                    <span class="text-xs bg-slate-100 text-slate-500 font-semibold px-2.5 py-1 rounded-full">暂无生成队列</span>
+                </div>
+
+                <div class="flex-1 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 flex flex-col items-center justify-center p-8 text-center space-y-4">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400">
+                        <i class="fa-solid fa-cubes text-3xl"></i>
+                    </div>
+                    <div class="max-w-xs space-y-2">
+                        <h4 class="font-bold text-slate-800">未载入图像素材</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">在左侧上传并微调配置后，点击生成。生成完毕后，即可在此处**无极缩放、自由拖拽**查看微小图拼接细节！</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                    <span class="text-xs text-slate-400">渲染耗时：--</span>
+                    <div class="flex space-x-3">
+                        <button disabled class="px-4 py-2 bg-slate-100 text-slate-400 font-semibold rounded-xl text-xs flex items-center space-x-1.5 cursor-not-allowed">
+                            <i class="fa-solid fa-download"></i>
+                            <span>免费普通版 (带水印)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 bg-white border-y border-slate-100">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h3 class="text-3xl font-black tracking-tight">只需三步，即刻珍藏</h3>
+                <p class="text-sm text-slate-400">无需专业设计功底，全自动化智能色彩拟合匹配</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-4 p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold text-lg">01</div>
+                    <h4 class="font-bold text-lg text-slate-900">定格你的核心主图</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        挑选一张色彩层次鲜明、核心主体突出的照片（如人像、宠物、经典婚礼合照）。这张大图将决定最终拼接成果的视觉轮廓。
+                    </p>
+                </div>
+                <div class="space-y-4 p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold text-lg">02</div>
+                    <h4 class="font-bold text-lg text-slate-900">导入海量记忆胶卷</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        批量选中准备填充的细节素材（50~500张）。不管是手机生活随拍、毕业季快照、旅行自拍，算法都会提取出它们的主色特征，变成最佳画布材料。
+                    </p>
+                </div>
+                <div class="space-y-4 p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition duration-300">
+                    <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold text-lg">03</div>
+                    <h4 class="font-bold text-lg text-slate-900">云端智能拟合调色</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        算法计算每个像素块的 CIELAB 色差，排除连续重复图片造成的视觉死板。你可以调节色彩融合度，一键生成兼具远观震撼与细看趣味的高画质大图。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="examples" class="py-16 px-6 max-w-7xl mx-auto space-y-12" x-data="{ activeTab: 'wedding' }">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+            <div class="space-y-2">
+                <h3 class="text-3xl font-black tracking-tight">定格不同场景的温暖瞬间</h3>
+                <p class="text-sm text-slate-400">每一个重要的纪念日，都值得被用这种宏大的方式记载。</p>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                <button @click="activeTab = 'wedding'" :class="activeTab === 'wedding' ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">💒 浪漫婚礼</button>
+                <button @click="activeTab = 'gift'" :class="activeTab === 'gift' ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">🎁 创意礼物</button>
+                <button @click="activeTab = 'travel'" :class="activeTab === 'travel' ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">✈️ 旅行脚印</button>
+                <button @click="activeTab = 'pet'" :class="activeTab === 'pet' ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">🐾 激萌宠物</button>
+                <button @click="activeTab = 'grad'" :class="activeTab === 'grad' ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">🎓 毕业青春</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
+            <div class="lg:col-span-7 rounded-2xl overflow-hidden aspect-video bg-slate-100">
+                <template x-if="activeTab === 'wedding'">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Wedding">
+                </template>
+                <template x-if="activeTab === 'gift'">
+                    <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Gift">
+                </template>
+                <template x-if="activeTab === 'travel'">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Travel">
+                </template>
+                <template x-if="activeTab === 'pet'">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Pet">
+                </template>
+                <template x-if="activeTab === 'grad'">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Graduation">
+                </template>
+            </div>
+            <div class="lg:col-span-5 space-y-4">
+                <div class="space-y-2">
+                    <h4 class="text-2xl font-black text-slate-900" x-text="activeTab === 'wedding' ? '婚礼纪念：汇聚亲友祝福' : activeTab === 'gift' ? '创意礼品：亲手编织的心意' : activeTab === 'travel' ? '旅行轨迹：万水千山总是情' : activeTab === 'pet' ? '萌宠合照：记录TA陪你的时光' : '毕业季：让青春永不散场'"></h4>
+                    <p class="text-sm text-slate-500 leading-relaxed" x-text="activeTab === 'wedding' ? '把婚礼当天的筹备、誓言、亲友抓拍、晚宴所有温情画面，拼凑出新郎新娘深情相拥的一瞬，是绝佳的客厅背景墙装饰。' : activeTab === 'gift' ? '把和死党/伴侣数年来的每一次相聚、每一次聊天截图作为子图，拼成对方的艺术肖像，是绝无仅有的手工科技礼物。' : activeTab === 'travel' ? '把跨越多个国家的上百张旅途风光照、路标、美食，作为每一个像素，渲染出心中最具代表性的一处风景。' : activeTab === 'pet' ? '主子一年来的各种丑照、憨态、睡姿，密密麻麻地拼凑成一张优雅的定格照。铲屎官无法拒绝的超级壁纸。' : '大学四年的班级大合照、寝室日常、图书馆苦读、社团活动，全都融入在最后的学位照里。这才是致敬青春最好的纪念。'"></p>
+                </div>
+                <a href="#create" class="inline-flex items-center space-x-2 text-brand-600 hover:text-brand-700 font-bold text-sm">
+                    <span>使用该场景制作</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-16 px-6 bg-slate-900 text-white relative overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto space-y-12 relative z-10">
+            <div class="text-center max-w-xl mx-auto space-y-4">
+                <span class="bg-brand-600/20 text-brand-100 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">简单透明的定价体系</span>
+                <h3 class="text-3xl md:text-4xl font-black tracking-tight">选择契合你的保存方式</h3>
+                <p class="text-sm text-slate-400">你可以永久无限次免费体验在线生成，也可以选择通过极低的价格买断高精细节。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-slate-800/50 backdrop-blur border border-slate-800 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-slate-400 text-sm">完全免费档</h4>
+                            <p class="text-2xl font-black">¥ 0</p>
+                        </div>
+                        <p class="text-xs text-slate-400">适合初步体验拼图玩法和线上社交媒体分享。</p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 pt-4 border-t border-slate-800">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>极速本地生成</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>无极在线细节缩放预览</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>下载长边 &le; 3000px 拼图</li>
+                            <li class="flex items-center text-slate-500"><i class="fa-solid fa-triangle-exclamation mr-2 text-amber-500"></i>带有拼图专属网址水印</li>
+                        </ul>
+                    </div>
+                    <a href="#create" class="mt-6 w-full text-center bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs transition">
+                        开始体验
+                    </a>
+                </div>
+
+                <div class="bg-slate-800/50 backdrop-blur border border-slate-800 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-slate-400 text-sm">单次特惠包</h4>
+                            <p class="text-2xl font-black">¥ 15 <span class="text-xs font-normal text-slate-400">/ 约 $2.99</span></p>
+                        </div>
+                        <p class="text-xs text-slate-400">只为一张完美结果买单，适合偶尔的节日送礼需求。</p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 pt-4 border-t border-slate-800">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>单次解锁高清无水印大图</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>无水印下载版长边 &le; 10000px</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>支持 300 DPI 海报级物理打印</li>
+                            <li class="flex items-center text-slate-500"><i class="fa-solid fa-xmark mr-2.5"></i>暂不支持自定义异形网格</li>
+                        </ul>
+                    </div>
+                    <button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs transition">
+                        按需买断
+                    </button>
+                </div>
+
+                <div class="bg-brand-600/90 border-2 border-brand-500 p-6 rounded-3xl flex flex-col justify-between relative shadow-xl shadow-brand-600/20 transform scale-105">
+                    <div class="absolute -top-3 right-4 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">手动续期 • 无限次数</div>
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-brand-100 text-sm">30天无限体验卡</h4>
+                            <p class="text-3xl font-black">¥ 29 <span class="text-xs font-normal text-brand-200">/ 约 $4.99</span></p>
+                        </div>
+                        <p class="text-xs text-brand-100">高性价比，适合集中制作、多轮反复调优导出。</p>
+                        <ul class="space-y-2.5 text-xs text-brand-50 pt-4 border-t border-brand-500">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-white mr-2"></i>30天内无限次生成与下载</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-white mr-2"></i>无任何水印，原生高清像素导出</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-white mr-2"></i>解锁圆、三角、六边形特殊网格</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-white mr-2"></i>单账户缓存素材配额翻倍</li>
+                        </ul>
+                    </div>
+                    <button class="mt-6 w-full bg-white hover:bg-slate-50 text-brand-700 font-extrabold py-3 rounded-xl text-xs shadow-md transition">
+                        立即体验
+                    </button>
+                </div>
+
+                <div class="bg-slate-800/50 backdrop-blur border border-slate-800 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-slate-400 text-sm">终身极客包</h4>
+                            <p class="text-2xl font-black">¥ 199 <span class="text-xs font-normal text-slate-400">/ 约 $29.99</span></p>
+                        </div>
+                        <p class="text-xs text-slate-400">设计师、高频制作极客或极度热爱马赛克艺术者的首选。</p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 pt-4 border-t border-slate-800">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>无限期、不限次数、尊享极速队列</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>未来接入的 AI 图片语义识别匹配权益</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>最大素材与大图尺寸上限全面免限制</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>通过登记邮箱，多平台、多设备找回</li>
+                        </ul>
+                    </div>
+                    <button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs transition">
+                        永久买断
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-16 px-6 max-w-4xl mx-auto space-y-12">
+        <div class="text-center space-y-2">
+            <h3 class="text-3xl font-black tracking-tight">常见问题答疑 (FAQ)</h3>
+            <p class="text-sm text-slate-400">关于隐私、格式和生成的快问快答</p>
+        </div>
+
+        <div class="space-y-4" x-data="{ activeFaq: null }">
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                <button @click="activeFaq = (activeFaq === 1 ? null : 1)" class="w-full text-left p-5 font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50/50 transition">
+                    <span>Q1: 导入我的照片会被用作其他商业用途吗？有泄露风险吗？</span>
+                    <i class="fa-solid text-slate-400 text-xs transition-transform" :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="activeFaq === 1" x-collapse class="px-5 pb-5 text-xs text-slate-500 leading-relaxed bg-slate-50/30" x-cloak>
+                    当然不会！我们的核心架构遵循**极简无泄漏理念**。未结算的临时上传数据只会在服务器本地临时保存3天，用于支持您中途继续编辑或下载。3天到期后，系统会彻底删除您的素材和大图。我们不强制用户注册账号，且决不把这些照片用于 AI 训练。
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                <button @click="activeFaq = (activeFaq === 2 ? null : 2)" class="w-full text-left p-5 font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50/50 transition">
+                    <span>Q2: 如果我的 200 张子图色彩不够丰富，生成的图能看清吗？</span>
+                    <i class="fa-solid text-slate-400 text-xs transition-transform" :class="activeFaq === 2 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="activeFaq === 2" x-collapse class="px-5 pb-5 text-xs text-slate-500 leading-relaxed bg-slate-50/30" x-cloak>
+                    没问题。我们的算法内置了 **原图色彩融合度** 的动态微调。只要开启 20%~40% 的叠加参数，即便您的素材数量和颜色非常单一，生成的图像也能完美映射出大图的结构，兼具小图的拼贴艺术感。
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                <button @click="activeFaq = (activeFaq === 3 ? null : 3)" class="w-full text-left p-5 font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50/50 transition">
+                    <span>Q3: 购买了永久或月度权益，清空浏览器缓存或换电脑后丢了怎么办？</span>
+                    <i class="fa-solid text-slate-400 text-xs transition-transform" :class="activeFaq === 3 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="activeFaq === 3" x-collapse class="px-5 pb-5 text-xs text-slate-500 leading-relaxed bg-slate-50/30" x-cloak>
+                    在付费结账时，系统会可选性地收集您的邮箱，并向该邮箱发送一份一次性的**权益找回凭证**。未来即便
